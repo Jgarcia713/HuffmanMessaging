@@ -14,5 +14,4 @@ public class MessagingApp extends Application {
 		stage.show();
 	}
 
-
 }
