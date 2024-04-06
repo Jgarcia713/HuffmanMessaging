@@ -1,4 +1,8 @@
-
+/**
+ * A class for creating Huffman trees, as well as their encoding and decoding
+ * processes
+ * 
+ */
 public class Huffman {
 	private class TreeNode {
 		// Instance variables
@@ -18,19 +22,19 @@ public class Huffman {
 	public Huffman() {
 		root = new TreeNode(' '); // temporary
 	}
-	
+
 	public void addNode(char data) {
-		
+
 	}
-	
+
 	private void encode() {
-		
+
 	}
-	
+
 	public String decode() {
 		return " ";
 	}
-	
+
 	@Override
 	public String toString() {
 		return " ";
