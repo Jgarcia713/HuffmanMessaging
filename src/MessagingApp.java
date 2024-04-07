@@ -13,6 +13,4 @@ public class MessagingApp extends Application {
 		stage.setScene(scene);
 		stage.show();
 	}
-	//hi
-
 }
