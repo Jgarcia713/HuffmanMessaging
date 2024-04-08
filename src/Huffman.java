@@ -72,11 +72,53 @@ public class Huffman {
 		for (int i = 0; i < nodes.length; i++) {
 			nodes[i] = new TreeNode(uniqueChars[i], frequencies[i]);
 			System.out.println(nodes[i]);
-
 		}
 		
-
 	}
+	
+	public static LinkedList quickSort(LinkedList list) {
+	    if (list.isEmpty() || list.getHead().getNext() == null) {
+	        return list;
+	    }
+
+	    Node pivotNode = list.getHead();
+	    LinkedList small = new LinkedList();
+	    LinkedList big = new LinkedList();
+
+	    Node curr = list.getHead().getNext();
+	    while (curr != null) {
+	        if (curr.getFrequency() <= pivotNode.getFrequency()) {
+	            small.add(curr.getCharacter(), curr.getFrequency());
+	        } else {
+	            big.add(curr.getCharacter(), curr.getFrequency());
+	        }
+	        curr = curr.getNext();
+	    }
+
+	    small = quickSort(small);
+	    big = quickSort(big);
+
+	    // Combine lists: small + pivot + big
+	    getTail(small).setNext(new Node(pivotNode.getCharacter(), pivotNode.getFrequency())); // Add pivot to the end of small
+	    getTail(small).getNext().setNext(big.getHead()); // Link the end of small (which is now pivot) to the head of big
+
+	    return small.isEmpty() ? big : small;
+	}
+
+	// Helper method to get the tail of the LinkedList
+	private static Node getTail(LinkedList list) {
+	    if (list.isEmpty()) return null;
+
+	    Node tail = list.getHead();
+	    while (tail.getNext() != null) {
+	        tail = tail.getNext();
+	    }
+	    return tail;
+	}
+	
+	
+
+
 
 	public void addNode(char data) {
 
