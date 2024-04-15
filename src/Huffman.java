@@ -38,15 +38,15 @@ public class Huffman {
 	}
 
 	public static void main(String[] args) {
-		Huffman x = new Huffman("This message is a bit more convoluted");
+		Huffman x = new Huffman("hello");
 	}
 
 	private TreeNode root;
 	private TreeNode[] queue;
 	private int queueSize;
+	private String message; // REMOVE LATER. USED FOR TESTING GUI
 
 	public Huffman(String text) {
-//		root = new TreeNode(' '); // temporary
 		/*-
 		 * 0. break into methods?
 		 * 1. Huffman tree is created, so next up is to get the encoding of the actual message
@@ -61,8 +61,16 @@ public class Huffman {
 		 *         may need to add an attribute to keep track of predecessors). This sounded like a better idea in my head,
 		 *         but it might estimate out to be O(N^2)
 		 * 3. We probably go with 2b. 
+		 * 3.5. I was thinking we could store the binary encoding into a long using bit shifting.
+		 *      we would just need to create enough longs to fit the whole encoding, which could be done after
+		 *      we know the length of each traversal to a character. We can store the traversal for each character
+		 *      by creating a struct of sorts for each character that can store the traversal as a boolean or byte
+		 *      array
 		 * 4. Write a decode method that takes the encoded binary string and produces the original message!
-		 * 
+		 * 5. Depending on how serious we want to get, it doesn't actually make sense to pass whole huffman trees back and forth
+		 *    when trying to lower the cost of data transmission, so we could consider getting the preorder and inorder traversals
+		 *    of the tree, and then passing that instead of the whole tree, in which case the receiver would then have to reconstruct 
+		 *    the tree in an easier fashion, and then they can decode the values. 
 		 * 
 		 */
 
@@ -90,16 +98,8 @@ public class Huffman {
 		queue = new TreeNode[uniqueCount];
 		queueSize = 0;
 		for (int i = 0; i < queue.length; i++) {
-			this.insert(i, new TreeNode(uniqueChars[i], frequencies[i]));
+			this.insert(new TreeNode(uniqueChars[i], frequencies[i]));
 		}
-
-//		System.out.println(this.toString());
-
-//		for (int i = 0; i < queue.length; i++) {
-//			this.removeNext();
-//			System.out.println(this.toString());
-//
-//		}
 
 		while (queueSize > 1) {
 			TreeNode node1 = this.removeNext();
@@ -107,16 +107,23 @@ public class Huffman {
 			TreeNode innerNode = new TreeNode(node1.weight + node2.weight);
 			innerNode.left = node1;
 			innerNode.right = node2;
-			this.insert(queueSize, innerNode);
+			this.insert(innerNode);
 		}
 		root = queue[0];
+
 		System.out.println(root);
+		this.message = text; // REMOVE LATER. USED FOR TESTING GUI
 	}
 
-	private void insert(int index, TreeNode newNode) {
+	/**
+	 * Insert a TreeNode into the correct position in the priority queue
+	 * 
+	 * @param index
+	 * @param newNode
+	 */
+	private void insert(TreeNode newNode) {
 		queue[queueSize] = newNode;
-//		System.out.println(queue[index] + " " + index);
-		this.swim(queue, index);
+		this.swim(queue, queueSize);
 		queueSize++;
 	}
 
@@ -189,16 +196,19 @@ public class Huffman {
 		return node;
 	}
 
-	private void encode() {
+	private void encode() { // TODO
 
 	}
 
-	public String decode() {
-		return " ";
+	public String getEncoding() { // TODO: Change return type later. Needed for GUI
+		return message;
 	}
 
-	@Override
-	public String toString() {
+	public String decode(String text) { // TODO: Change return type. Needed for GUI
+		return text;
+	}
+
+	private String queueToString() {
 		String s = "[";
 		for (TreeNode node : queue) {
 			if (node == null)
