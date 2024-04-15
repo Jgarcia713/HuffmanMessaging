@@ -1,4 +1,3 @@
-
 /**
  * A class for creating Huffman trees, as well as their encoding and decoding
  * processes
@@ -189,13 +188,49 @@ public class Huffman {
 		return node;
 	}
 
-	private void encode() {
+	public String encode(String text) {
+        StringBuilder encoded = new StringBuilder();
+        for (char c : text.toCharArray()) {
+            encoded.append(findCode(root, c, ""));
+        }
+        return encoded.toString();
+    }
 
-	}
+    private String findCode(TreeNode node, char c, String path) {
+        if (node == null) {
+            return null;
+        }
+        if (node.isLeaf) {
+            if (node.data == c) {
+                return path;
+            } else {
+                return null;
+            }
+        }
+        String leftPath = findCode(node.left, c, path + "0");
+        if (leftPath != null) {
+            return leftPath;
+        }
+        String rightPath = findCode(node.right, c, path + "1");
+        return rightPath;
+    }
 
-	public String decode() {
-		return " ";
-	}
+    public String decode(String encoded) {
+        StringBuilder decoded = new StringBuilder();
+        TreeNode current = root;
+        for (int i = 0; i < encoded.length(); i++) {
+            if (encoded.charAt(i) == '0') {
+                current = current.left;
+            } else {  // '1'
+                current = current.right;
+            }
+            if (current.isLeaf) {
+                decoded.append(current.data);
+                current = root;  // reset for next character
+            }
+        }
+        return decoded.toString();
+    }
 
 	@Override
 	public String toString() {
