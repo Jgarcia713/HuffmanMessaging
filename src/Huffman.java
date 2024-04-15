@@ -111,7 +111,7 @@ public class Huffman {
 		}
 		root = queue[0];
 
-		System.out.println(root);
+//		System.out.println(root);
 		this.message = text; // REMOVE LATER. USED FOR TESTING GUI
 	}
 
