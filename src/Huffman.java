@@ -43,6 +43,8 @@ public class Huffman {
 	private TreeNode root;
 	private TreeNode[] queue;
 	private int queueSize;
+	private String originalText;
+	
 
 	public Huffman(String text) {
 //		root = new TreeNode(' '); // temporary
@@ -64,7 +66,7 @@ public class Huffman {
 		 * 
 		 * 
 		 */
-
+		this.originalText = text;
 		boolean[] isCounted = new boolean[text.length()];
 		char[] uniqueChars = new char[text.length()];
 		int[] frequencies = new int[text.length()];
@@ -243,4 +245,10 @@ public class Huffman {
 		}
 		return s.substring(0, s.length() - 2) + "]";
 	}
+
+	public String getEncoding() {
+	    if (root == null) return "";  // Ensure there's a Huffman tree to encode from.
+	    return this.encode(this.originalText);  // Assuming `textUsedForTree` holds the original text used to create the tree.
+	}
+
 }

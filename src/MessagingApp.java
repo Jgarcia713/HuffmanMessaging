@@ -23,6 +23,11 @@ public class MessagingApp extends Application implements Observer {
 	private boolean[] messageSide; // true = right side; false = left side of screen
 	private Console console;
 
+	
+	public static void main(String[] args) {
+		launch(args);	
+		
+	}
 	@Override
 	public void start(Stage stage) throws Exception {
 		pane = new BorderPane();
