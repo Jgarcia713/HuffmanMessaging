@@ -66,6 +66,7 @@ public class Huffman {
 		 * 
 		 * 
 		 */
+
 		this.originalText = text;
 		boolean[] isCounted = new boolean[text.length()];
 		char[] uniqueChars = new char[text.length()];
