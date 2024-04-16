@@ -23,11 +23,11 @@ public class MessagingApp extends Application implements Observer {
 	private boolean[] messageSide; // true = right side; false = left side of screen
 	private Console console;
 
-	
 	public static void main(String[] args) {
-		launch(args);	
-		
+		launch(args);
+
 	}
+
 	@Override
 	public void start(Stage stage) throws Exception {
 		pane = new BorderPane();
@@ -80,7 +80,7 @@ public class MessagingApp extends Application implements Observer {
 
 				// Encode and send the message to the console
 				Huffman huffmanTree = new Huffman(field.getText().trim());
-				console.receiveMessage(huffmanTree.getEncoding(), huffmanTree);
+				console.receiveMessage(huffmanTree.getEncoding(), huffmanTree.getTotalBits(), huffmanTree);
 
 				field.clear();
 			}
@@ -155,8 +155,8 @@ public class MessagingApp extends Application implements Observer {
 	 * @param encoding    - The encoding of the Huffman tree
 	 * @param huffmanTree - The Huffman tree
 	 */
-	public void receiveMessage(String encoding, Huffman huffmanTree) {
-		String decodedMessage = huffmanTree.decode(encoding);
+	public void receiveMessage(byte[] encoding, int totalBits, Huffman huffmanTree) {
+		String decodedMessage = huffmanTree.decode(encoding, totalBits);
 		TextArea message = new TextArea(decodedMessage);
 
 		this.updateMessageDisplay(message, false);
@@ -173,7 +173,7 @@ public class MessagingApp extends Application implements Observer {
 		Huffman tree = console.getTree();
 		// The console is run on a separate thread, so we need to ensure it runs on the
 		// Javafx thread
-		Platform.runLater(() -> this.receiveMessage(tree.getEncoding(), tree));
+		Platform.runLater(() -> this.receiveMessage(tree.getEncoding(), tree.getTotalBits(), tree));
 
 	}
 }
