@@ -4,46 +4,41 @@
  * 
  */
 public class Huffman {
-	private class TreeNode {
-		// Instance variables
-		private char data;
-		private int weight;
-		private TreeNode left;
-		private TreeNode right;
-		private boolean isLeaf;
+    private class TreeNode {
+        private char data;
+        private int weight;
+        private TreeNode left;
+        private TreeNode right;
+        private boolean isLeaf;
 
-		public TreeNode(char theData, int weight) {
-			data = theData;
-			this.weight = weight;
-			left = null;
-			right = null;
-			isLeaf = true;
-		}
+        public TreeNode(char theData, int weight) {
+            this.data = theData;
+            this.weight = weight;
+            this.left = null;
+            this.right = null;
+            this.isLeaf = true;
+        }
 
-		public TreeNode(int weight) {
-			data = ' ';
-			this.weight = weight;
-			left = null;
-			right = null;
-			this.isLeaf = false;
-		}
+        public TreeNode(int weight) {
+            this.data = ' ';
+            this.weight = weight;
+            this.left = null;
+            this.right = null;
+            this.isLeaf = false;
+        }
 
-		@Override
-		public String toString() {
-			if (!isLeaf)
-				return "[(" + weight + "), LL" + left + ", RR" + right + "]";
-			return "<\"" + data + "\", " + weight + ">";
-		}
-	}
+        @Override
+        public String toString() {
+            if (!isLeaf)
+                return "[(" + weight + "), LL" + left + ", RR" + right + "]";
+            return "<\"" + data + "\", " + weight + ">";
+        }
+    }
 
-	public static void main(String[] args) {
-		Huffman x = new Huffman("This message is a bit more convoluted");
-	}
-
-	private TreeNode root;
-	private TreeNode[] queue;
-	private int queueSize;
-	private String originalText;
+    private TreeNode root;
+    private TreeNode[] queue;
+    private int queueSize;
+    private String originalText;
 	
 
 	public Huffman(String text) {
@@ -191,52 +186,60 @@ public class Huffman {
 		return node;
 	}
 
-	public String encode(String text) {
-        StringBuilder encoded = new StringBuilder();
-        for (char c : text.toCharArray()) {
-            encoded.append(findCode(root, c, ""));
-        }
-        return encoded.toString();
-    }
+	 public byte[] encode(String text) {
+	        List<Byte> encodedBytes = new ArrayList<>();
+	        int currentByte = 0;
+	        int bitPos = 0;
 
-    private String findCode(TreeNode node, char c, String path) {
-        if (node == null) {
-            return null;
-        }
-        if (node.isLeaf) {
-            if (node.data == c) {
-                return path;
-            } else {
-                return null;
-            }
-        }
-        String leftPath = findCode(node.left, c, path + "0");
-        if (leftPath != null) {
-            return leftPath;
-        }
-        String rightPath = findCode(node.right, c, path + "1");
-        return rightPath;
-    }
+	        for (char c : text.toCharArray()) {
+	            String code = findCode(root, c, "");
+	            for (char bit : code.toCharArray()) {
+	                if (bit == '1') {
+	                    currentByte |= (1 << bitPos);
+	                }
+	                bitPos++;
+	                if (bitPos == 8) {
+	                    encodedBytes.add((byte) currentByte);
+	                    currentByte = 0;
+	                    bitPos = 0;
+	                }
+	            }
+	        }
+	        if (bitPos > 0) {
+	            encodedBytes.add((byte) currentByte);  // Add the last byte if it's not full
+	        }
+	        byte[] bytes = new byte[encodedBytes.size()];
+	        for (int i = 0; i < encodedBytes.size(); i++) {
+	            bytes[i] = encodedBytes.get(i);
+	        }
+	        return bytes;
+	    }
 
-    public String decode(String encoded) {
-    	if (encoded == ""){
-    			return this.originalText;
-    	}
-        StringBuilder decoded = new StringBuilder();
-        TreeNode current = root;
-        for (int i = 0; i < encoded.length(); i++) {
-            if (encoded.charAt(i) == '0') {
-                current = current.left;
-            } else {  // '1'
-                current = current.right;
-            }
-            if (current.isLeaf) {
-                decoded.append(current.data);
-                current = root;  // reset for next character
-            }
-        }
-        return decoded.toString();
-    }
+	    private String findCode(TreeNode node, char c, String path) {
+	        if (node == null) return null;
+	        if (node.isLeaf && node.data == c) {
+	            return path;
+	        }
+	        String leftPath = findCode(node.left, c, path + "0");
+	        if (leftPath != null) return leftPath;
+	        return findCode(node.right, c, path + "1");
+	    }
+
+	    public String decode(byte[] encoded) {
+	        StringBuilder decoded = new StringBuilder();
+	        TreeNode current = root;
+	        for (byte b : encoded) {
+	            for (int i = 0; i < 8; i++) {
+	                boolean bit = (b & (1 << i)) != 0;
+	                current = bit ? current.right : current.left;
+	                if (current.isLeaf) {
+	                    decoded.append(current.data);
+	                    current = root;
+	                }
+	            }
+	        }
+	        return decoded.toString();
+	    }
 
 	@Override
 	public String toString() {
