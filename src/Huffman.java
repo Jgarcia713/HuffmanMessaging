@@ -219,6 +219,9 @@ public class Huffman {
     }
 
     public String decode(String encoded) {
+    	if (encoded == ""){
+    			return this.originalText;
+    	}
         StringBuilder decoded = new StringBuilder();
         TreeNode current = root;
         for (int i = 0; i < encoded.length(); i++) {
