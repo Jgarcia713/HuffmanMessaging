@@ -21,8 +21,8 @@ public class Console extends Observable {
 	 * @param encoding    - The encoding of the Huffman tree
 	 * @param huffmanTree - the Huffman tree
 	 */
-	public void receiveMessage(String encoding, Huffman huffmanTree) { // Change encoding type
-		String decodedMessage = huffmanTree.decode(encoding);
+	public void receiveMessage(byte[] encoding, int totalBits, Huffman huffmanTree) { // Change encoding type
+		String decodedMessage = huffmanTree.decode(encoding, totalBits);
 		System.out.println("GUI user sent:");
 		System.out.println(decodedMessage);
 		System.out.println("-------------------");
